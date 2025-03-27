@@ -1,4 +1,4 @@
-name: Run Vitest Tests
+name: Unit Tests CI test
 
 on:
   push:
@@ -7,20 +7,34 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  unit-test:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: npm
+          cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
+      - run: npm test
 
-      - name: Run tests
-        run: npm test
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run build
