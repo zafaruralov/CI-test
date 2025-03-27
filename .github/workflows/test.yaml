@@ -1,4 +1,5 @@
-name: Run Vitest Tests
+
+name: Unit Tests CI test
 
 on:
   push:
@@ -7,20 +8,33 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  unit-test:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v3
+        name: Zafar Repository🥲
+      - name: Setup Node
+        uses: actions/setup-node@v3
+      - uses: actions/cache@v3
+        id: npm-cache
         with:
-          node-version: 18
-          cache: npm
+          path: ~/.npm
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+      - run: npm ci
+      - run: npm test
+    build:
+      runs-on: ubuntu-latest
 
-      - name: Install dependencies
-        run: npm ci
+      steps:
+        - uses: actions/checkout@v3
+        - name: Setup Node
+          uses: actions/setup-node@v3
+        - uses: actions/cache@v3
+          id: npm-cache
+          with:
+            path: ~/.npm
+            key: npm-${{ hashFiles('**/package-lock.json') }}
+        - run: npm ci
+        - run: npm test
 
-      - name: Run tests
-        run: npm test
